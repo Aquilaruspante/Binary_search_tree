@@ -36,7 +36,7 @@ class Tree {
       }
     }
 
-    deleteItem(value, node = this.root, prevNode = null, side = null) {
+    deleteItem(value, node = this.root) {
       if (!node) return null;
   
       if (value < node.data) {
