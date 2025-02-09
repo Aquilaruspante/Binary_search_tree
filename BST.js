@@ -6,12 +6,6 @@ class Tree {
         this.root = this.treeBuild(array);
     }
 
-    #traverse(node, side, prevNode = null) {
-      if (!node) return prevNode;
-
-      return this.#traverse(node[`${side}`], side, prevNode = node)
-    }
-
     treeBuild(array, start=0, end=array.length-1) {
         if (start > end) return null;
 
@@ -42,46 +36,42 @@ class Tree {
       }
     }
 
-    deleteItem(value, node = this.root, side = null, prevNode = null) {
-
-      if (value === node.data) {
-        if (!prevNode) {
-          this.root = node.left;
-          const rightExtremity = this.#traverse(node.left, 'right');
-          rightExtremity.right = node.right; 
-        } else {
-
-          if (side === 'left') {  
-            if (node.left) {
-              prevNode.left = node.left;
-              const rightExtremity = this.#traverse(node.left, 'right');
-              rightExtremity.right = node.right;
-            } else  if (node.right) {
-              prevNode.left = node.right;
-            } else {
-              prevNode.left = null;
-            }
-
-          } else if (side === 'right') {
-            if (node.left) {
-              prevNode.right = node.left;
-              const rightExtremity = this.#traverse(node.left, 'right');
-              rightExtremity.right = node.right;
-            } else if (node.right) {
-              prevNode.right = node.right;
-            } else {
-              prevNode.right = null;
-            }
-            
-            
-          }
-        }
-      } else if (value < node.data) {
-        this.deleteItem(value, node.left, 'left', prevNode = node);
+    deleteItem(value, node = this.root, prevNode = null, side = null) {
+      if (!node) return null;
+  
+      if (value < node.data) {
+          node.left = this.deleteItem(value, node.left, node, 'left');
       } else if (value > node.data) {
-        this.deleteItem(value, node.right, 'right', prevNode = node);
+          node.right = this.deleteItem(value, node.right, node, 'right');
+      } else {
+          
+          if (!node.left && !node.right) {
+              return null;
+          }
+          
+          if (!node.left) return node.right;
+          if (!node.right) return node.left;
+  
+          let successor = node.right;
+          let parentSuccessor = node;
+  
+          while (successor.left) {
+              parentSuccessor = successor;
+              successor = successor.left;
+          }
+
+          node.data = successor.data;
+  
+          if (parentSuccessor.left === successor) {
+              parentSuccessor.left = successor.right;
+          } else {
+              parentSuccessor.right = successor.right;
+          }
       }
-    }
+  
+      return node;
+  }
+  
 
     find(value, node = this.root) {
       if (!node) return 'Value not present!';

@@ -48,3 +48,7 @@ tree.rebalance();
 checkIsBalanced();
 
 prettyPrint(tree.root);
+
+tree.deleteItem(135);
+checkIsBalanced();
+prettyPrint(tree.root);
